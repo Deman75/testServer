@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="RU-ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="./style.css">
+  <title>NodeJS Server</title>
+</head>
+<body>
+  <div class="wrap">
+
+    <button type="button" class="button" name="download">Загрузить изображения</button>
+    <form class="form" name="formimage" action="/upload" enctype="multipart/form-data" method="POST">
+      <label class="file button">
+        <span class="file__desc" style="font-size: inherit">Выбрать изображения</span>
+        <input type="file" name="image" class="file__input" multiple accept="image/*,image/jpeg">
+        <!-- <input type="text" name="name" value="Dmitriy"> -->
+      </label>
+      <button type="submit" class="button" name="submit">Отправить</button>
+    </form>
+
+    <div class="slides">
+    </div>
+
+  </div>
+
+  <script src="./main.js" type="text/javascript"></script>
+</body>
+</html>
