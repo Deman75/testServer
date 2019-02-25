@@ -39,7 +39,6 @@ button.addEventListener('click', () => {
     .then((images) => {
       addImage(images);
     })
-
 })
 
 const submit = document.getElementsByName('submit')[0];
@@ -48,11 +47,9 @@ submit.addEventListener('click', (e) => {
   e.preventDefault();
 
   const form = document.querySelector('.form');
-  const file = document.querySelector('.file__input');
 
   let formData = new FormData(form);
-  // formData.append("fileName", file.files[0].name);
-  // formData.append("image", file.files[0]);
+
   console.log(formData);
 
   fetch('/upload', {
@@ -62,6 +59,12 @@ submit.addEventListener('click', (e) => {
   .catch(() => {
     console.log('error');
   })
-  .then(() => console.log('Отправил'))
+  .then(function (response) {
+    return response.json()
+  })
+  .then(function (data) {
+    console.log('data', data)
+  })
+
 
 })

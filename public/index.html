@@ -14,10 +14,11 @@
     <form class="form" name="formimage" action="/upload" enctype="multipart/form-data" method="POST">
       <label class="file button">
         <span class="file__desc" style="font-size: inherit">Выбрать изображения</span>
-        <input type="file" name="image" class="file__input" multiple accept="image/*,image/jpeg">
-        <!-- <input type="text" name="name" value="Dmitriy"> -->
+        <input type="file" name="image" class="file__input" accept="image/*,image/jpeg">
       </label>
-      <button type="submit" class="button" name="submit">Отправить</button>
+      <input type="text" name="alt" value="images">
+      <input type="text" name="title" value="this is title">
+      <button type="submit" class="button submit" name="submit">Отправить</button>
     </form>
 
     <div class="slides">
