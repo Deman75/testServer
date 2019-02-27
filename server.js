@@ -5,6 +5,7 @@ const mime = require('mime-types');
 
 var multiparty = require('multiparty');
 var util = require('util');
+const db = require('./db');
 
 const mainPath = './public';
 var upload_dir = path.join(__dirname, '/public/images/');
@@ -42,6 +43,16 @@ function pushToJSON(path, obj) {
     })
   })
 }
+
+const connectDB = async (userName) => {
+  // const { rows } = await db.query('SELECT * FROM users WHERE login = $1', [userName])
+  const { rows } = await db.query('SELECT * FROM users ORDER BY id DESC');
+  for (let i = 0; i < rows.length; i++) {
+    console.log(rows[i]);
+  }
+}
+
+connectDB('deman75');
 
 // pushToJSON('./public/images/images.json', {url: '1', alt:'asgfdas', hint:'Ура!!!'});
 
