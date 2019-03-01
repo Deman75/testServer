@@ -1,0 +1,130 @@
+.signin {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+.signin__desc {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+.signin__icon {
+  width: 30px;
+  height: 30px;
+  fill: #aaa;
+  transition: fill .2s;
+}
+.signin__desc_open .signin__icon {
+  fill: #000;
+}
+.signin__desc_open .signin__arrow {
+  fill: #000;
+  transform: rotate(180deg);
+}
+.signin__desc:hover .signin__icon, .signin__desc:hover .signin__arrow{
+  fill: #000;
+}
+.signin__desc_active .signin__icon, .signin__desc_active .signin__arrow {
+  fill: #008f00;
+}
+
+.signin__arrow {
+  width: 15px;
+  height: 8px;
+  margin-left: 5px;
+  fill: #aaa;
+  transition: fill .2s, transform .3s;
+}
+
+
+/* Form inputs */
+.form__input {
+  display: block;
+  margin: 10px 0px;
+  padding: 10px 15px;
+  font-size: 16px;
+  box-shadow: 0 0 10px 2px rgba(0, 0, 0, .2);
+  border: none;
+  border-radius: 5px;
+  transition: box-shadow .3s;
+}
+.form__input:first-child {
+  margin-top: 0;
+}
+.form__input_ok {
+  box-shadow: 0 0 10px 2px rgba(0, 100, 0, .4);
+}
+.form__input_error {
+  box-shadow: 0 0 10px 2px rgba(150, 0, 0, .4);
+}
+.form__input::placeholder{
+  color: #888;
+}
+.form__input:focus {
+  outline: none;
+  box-shadow: 0 0 10px 2px rgba(0, 100, 0, .4);
+}
+.form__input_error:focus {
+  box-shadow: 0 0 10px 2px rgba(150, 0, 0, .4);
+}
+.button_min-width {
+  min-width: 100px;
+}
+
+/* Flip card */
+
+.flip {
+  display: none;
+  position: absolute;
+  top: 100%;
+  width: 300px;
+  height: 300px;
+  right: 0;
+  opacity: 0;
+  transition: opacity .3s;
+  perspective: 1500px;
+}
+.flip_show {
+  display: block;
+}
+
+.flip__front, .flip__back {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: transform .8s ease-in;
+  background-color: #fff;
+  backface-visibility: hidden;
+  box-shadow: 0 0 10px 2px rgba(0, 0, 0, .2);
+}
+.flip__back {
+  transform: rotateY(180deg);
+}
+
+.flip_backside .flip__front {
+  transform: rotateY(-180deg);
+}
+.flip_backside .flip__back {
+  transform: rotateY(0deg);
+}
+/* Flip card */
+
+
+/* Front side */
+.signin__form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+/* Back side */

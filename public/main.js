@@ -1,3 +1,6 @@
+// require('./login.js');
+// import './login';
+
 const addImage = async (urls) => {
   for (let i = 0; i < urls.length; i++) {
     await new Promise((resolve, reject) => {
@@ -65,6 +68,4 @@ submit.addEventListener('click', (e) => {
   .then(function (data) {
     console.log('data', data)
   })
-
-
 })

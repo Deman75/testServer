@@ -52,9 +52,34 @@ const connectDB = async (userName) => {
   }
 }
 
-connectDB('deman75');
+const checkUser = async (login, password) => {
+  try {
+    const { rows } = await db.query('SELECT * FROM users WHERE login = $1 AND password = $2', [login, password]);
+    if (rows.length === 1) {
+      return true;
+    } else {
+      return false;
+    }
 
-// pushToJSON('./public/images/images.json', {url: '1', alt:'asgfdas', hint:'Ура!!!'});
+  } catch (e) {
+    throw new Error(e);
+  }
+}
+
+const sendQuery = async (query, params) => {
+  try {
+    const { rows } = await db.query(query, params);
+    if (rows.length === 1) {
+      return rows[0];
+    } else {
+      return false;
+    }
+  } catch (e) {
+    throw new Error(e);
+  }
+}
+
+connectDB('deman75');
 
 var server = http.createServer((request, response) => {
   console.log('Поступил запрос', request.url, request.method);
@@ -112,11 +137,102 @@ var server = http.createServer((request, response) => {
     // End the request when something goes wrong.
     form.on('error', function(err) {
       console.log(err);
-      response.writeHead(400, {'Content-Type': 'text/plain'});
+      response.writeHead(400, {'Content-Type': 'application/json'});
       response.end(JSON.stringify(err));
     });
 
     form.parse(request);
+  } else  if (request.url === '/login' && request.method === 'POST') {
+
+    const form = new multiparty.Form();
+
+    form.parse(request, function(err, fields) {
+
+      if (err) {
+        response.writeHead(400, {'content-type': 'application/json'});
+        response.end(JSON.stringify(err));
+        return;
+      }
+
+      const {login, password} = fields;
+
+      checkUser(login[0], password[0])
+        .then(check => {
+          if (check) {
+            const result = {"login": true};
+            response.writeHead(200, {'content-type': 'application/json'});
+            response.end(JSON.stringify(result));
+          } else {
+            const result = {"login": false};
+            response.writeHead(200, {'content-type': 'application/json'});
+            response.end(JSON.stringify(result));
+          }
+        })
+        .catch((err) => {
+          response.writeHead(405, {'content-type': 'application/json'});
+          response.end(JSON.stringify(err));
+        })
+    });
+
+
+  } else  if (request.url === '/register' && request.method === 'POST') {
+
+    const form = new multiparty.Form();
+    let query = '',
+        params = [];
+
+    form.parse(request, function(err, fields) {
+
+      if (err) {
+        response.writeHead(400, {'content-type': 'application/json'});
+        response.end(JSON.stringify(err));
+        return;
+      }
+
+      const {loginReg, emailReg, passReg, passConfirmReg} = fields;
+
+      console.log(loginReg[0], emailReg[0], passReg[0], passConfirmReg[0]);
+
+      query = 'SELECT login, email FROM users WHERE login = $1 OR email = $2 LIMIT 1';
+      params = [loginReg[0], emailReg[0]];
+      sendQuery(query, params)
+        .catch((err) => {
+          console.log(err);
+        })
+        .then(row => {
+          if (!row) {
+            const date = Date.now();
+            query = 'INSERT INTO users (login,email,password,email_confirmed,date) VALUES ( $1, $2, $3, $4, $5 ) RETURNING login';
+            params = [loginReg[0], emailReg[0], passReg[0], false, new Date(date)];
+            return sendQuery(query, params);
+          } else {
+            let result = {};
+            if (row.login === loginReg[0]) result.login = true;
+            if (row.email === emailReg[0]) result.email = true;
+
+            response.writeHead(200, {'content-type': 'application/json'});
+            response.end(JSON.stringify(result));
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .then((row) => {
+          if (row) {
+            let result = {'newUser': row.login};
+            response.writeHead(200, {'content-type': 'application/json'});
+            response.end(JSON.stringify(result));
+            console.log(row);
+          } else {
+            let result = {'newUser': false};
+            response.writeHead(200, {'content-type': 'application/json'});
+            response.end(JSON.stringify(result));
+          }
+        })
+
+    });
+
+
   } else {
     const url = request.url === '/' ? `${mainPath}/index.html` : `${mainPath + request.url}`;
     statFile(url)
