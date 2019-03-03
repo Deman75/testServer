@@ -8,9 +8,19 @@ const pool = new Pool({
   port: 5432,
 });
 
+const query = (text, params, callback) => {
+  return pool.query(text, params, callback)
+}
+const asd = function(){
+  return new Promise(res => {
+    setTimeout(function () {
+      // console.log(this.query)
+      res(query)
+    }, 10);
+  })
+}
 
 module.exports = {
-  query: (text, params, callback) => {
-    return pool.query(text, params, callback)
-  }
+  asd,
+  query,
 };
