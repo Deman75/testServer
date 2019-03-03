@@ -43,11 +43,11 @@ const buttonActive = (element, active) => {
 
 const badLoginOrPass = (red) => {
   if (red) {
-    loginInput.classList.add('signin__input_error');
-    passwordLogin.classList.add('signin__input_error');
+    loginInput.classList.add('form__input_error');
+    passwordLogin.classList.add('form__input_error');
   } else {
-    loginInput.classList.remove('signin__input_error');
-    passwordLogin.classList.remove('signin__input_error');
+    loginInput.classList.remove('form__input_error');
+    passwordLogin.classList.remove('form__input_error');
   }
 }
 
@@ -94,13 +94,28 @@ submitLogin.addEventListener('click', (e) => {
       return response.json();
     })
     .then((data) => {
-      const { login } = data;
+      const { login, password } = data;
       if (login) {
+        loginInput.classList.remove('form__input_error');
+        loginInput.classList.add('form__input_ok');
+      } else {
+        loginInput.classList.remove('form__input_ok');
+        loginInput.classList.add('form__input_error');
+        // badLoginOrPass(true);
+      }
+      if (password) {
+        passwordLogin.classList.add('form__input_ok');
+        passwordLogin.classList.remove('form__input_error');
+      } else {
+        passwordLogin.classList.remove('form__input_ok');
+        passwordLogin.classList.add('form__input_error');
+      }
+
+      if (login && password) {
         signin.classList.add('signin__desc_active');
         showForm(false);
       } else {
         signin.classList.remove('signin__desc_active');
-        badLoginOrPass(true);
       }
       console.log(data);
     })

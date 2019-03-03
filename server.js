@@ -145,6 +145,9 @@ var server = http.createServer((request, response) => {
   } else  if (request.url === '/login' && request.method === 'POST') {
 
     const form = new multiparty.Form();
+    let query = '',
+        params = [],
+        result = new Object();
 
     form.parse(request, function(err, fields) {
 
@@ -155,22 +158,40 @@ var server = http.createServer((request, response) => {
       }
 
       const {login, password} = fields;
+      query = 'SELECT * FROM users WHERE login = $1';
+      params = [login[0]];
 
-      checkUser(login[0], password[0])
-        .then(check => {
-          if (check) {
-            const result = {"login": true};
-            response.writeHead(200, {'content-type': 'application/json'});
-            response.end(JSON.stringify(result));
+      sendQuery(query, params)
+        .catch((err) => {
+          response.writeHead(400, {'content-type': 'application/json'});
+          response.end(JSON.stringify(err));
+        })
+        .then(row => {
+          if (row) {
+            result.login = true;
+            query = 'SELECT * FROM users WHERE login = $1 AND password = $2';
+            params = [login[0], password[0]];
+            return sendQuery(query, params);
           } else {
-            const result = {"login": false};
-            response.writeHead(200, {'content-type': 'application/json'});
-            response.end(JSON.stringify(result));
+              result.login = false;
+              response.writeHead(400, {'content-type': 'application/json'});
+              response.end(JSON.stringify(result));
           }
         })
         .catch((err) => {
-          response.writeHead(405, {'content-type': 'application/json'});
+          response.writeHead(400, {'content-type': 'application/json'});
           response.end(JSON.stringify(err));
+        })
+        .then((row) => {
+          if (row) {
+            result.password = true;
+            response.writeHead(200, {'content-type': 'application/json'});
+            response.end(JSON.stringify(result));
+          } else {
+            result.password = false;
+            response.writeHead(400, {'content-type': 'application/json'});
+            response.end(JSON.stringify(result));
+          }
         })
     });
 
@@ -197,7 +218,8 @@ var server = http.createServer((request, response) => {
       params = [loginReg[0], emailReg[0]];
       sendQuery(query, params)
         .catch((err) => {
-          console.log(err);
+          response.writeHead(400, {'content-type': 'application/json'});
+          response.end(JSON.stringify(err));
         })
         .then(row => {
           if (!row) {
@@ -215,14 +237,14 @@ var server = http.createServer((request, response) => {
           }
         })
         .catch((err) => {
-          console.log(err);
+          response.writeHead(400, {'content-type': 'application/json'});
+          response.end(JSON.stringify(err));
         })
         .then((row) => {
           if (row) {
             let result = {'newUser': row.login};
             response.writeHead(200, {'content-type': 'application/json'});
             response.end(JSON.stringify(result));
-            console.log(row);
           } else {
             let result = {'newUser': false};
             response.writeHead(200, {'content-type': 'application/json'});
